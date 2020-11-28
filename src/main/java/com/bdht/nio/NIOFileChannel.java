@@ -7,6 +7,9 @@ import java.io.IOException;
 import java.nio.ByteBuffer;
 import java.nio.channels.FileChannel;
 
+/**
+ * 还是存在bug
+ */
 public class NIOFileChannel {
     public static void main(String[] args) throws Exception {
         fileWrite();
