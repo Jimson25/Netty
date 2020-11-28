@@ -11,6 +11,7 @@ import java.util.Arrays;
  * buffer的分散和聚集：
  * Scattering：分散，将数据写入到buffer时可以采用buffer数组依次写入
  * Gathering：聚集，从buffer中读取数据时，可以采用buffer数组依次读取
+ * buffer的分散和聚集，其实就是讲buffer对象换成一个buffer数组，原先buffer的容量变成数组的所有元素的容量之和
  */
 public class ScatteringAndGatheringTest {
     public static void main(String[] args) throws Exception {
@@ -62,6 +63,9 @@ public class ScatteringAndGatheringTest {
             Arrays.asList(byteBuffers).forEach(Buffer::clear);
 
             System.out.println("readByte: " + readByte + " writeByte: " + writeByte + " ,massageLength: " + massageLength);
+            if (readByte == -1) {
+                break;
+            }
 
         }
 
