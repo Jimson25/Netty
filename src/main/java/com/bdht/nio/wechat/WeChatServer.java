@@ -3,10 +3,7 @@ package com.bdht.nio.wechat;
 import java.io.IOException;
 import java.net.InetSocketAddress;
 import java.nio.ByteBuffer;
-import java.nio.channels.SelectionKey;
-import java.nio.channels.Selector;
-import java.nio.channels.ServerSocketChannel;
-import java.nio.channels.SocketChannel;
+import java.nio.channels.*;
 import java.util.Iterator;
 import java.util.Set;
 
@@ -33,6 +30,7 @@ public class WeChatServer {
     }
 
     private void listen() {
+        System.out.println("服务器已启动，等待连接~~");
         while (true) {
             try {
                 //2秒内有事件发生的通道的个数大于0
@@ -75,11 +73,11 @@ public class WeChatServer {
                 String msg = new String(buffer.array());
                 System.out.println("from 客户端： " + msg);
                 //将读到的消息发送给其他客户端
-                sendMsgToOtherClient(msg, key, selector);
+                sendMsgToOtherClient(msg, channel, selector);
             }
         } catch (IOException e) {
             try {
-                System.out.println(channel.getRemoteAddress() + "离线~");
+                System.out.println(channel.getRemoteAddress() + " 离线~");
                 key.cancel();
                 channel.close();
             } catch (IOException ioException) {
@@ -95,16 +93,21 @@ public class WeChatServer {
      * @param from     发消息的那个客户端的channel对应的selectionKey
      * @param selector 发消息的客户端所注册的selector
      */
-    private void sendMsgToOtherClient(String msg, SelectionKey from, Selector selector) {
+    private void sendMsgToOtherClient(String msg, SocketChannel from, Selector selector) {
         //通过selector获取selectionKey的集合
         Set<SelectionKey> keys = selector.keys();
         //从集合中删除发送消息的那个key
-        keys.remove(from);
+
         //迭代器遍历出每个key
         Iterator<SelectionKey> iterator = keys.iterator();
         while (iterator.hasNext()) {
             //使用通过迭代器获取的selectionKey来获取它对应的channel
-            SocketChannel targetChannel = (SocketChannel) iterator.next().channel();
+            SelectableChannel channel = iterator.next().channel();
+            //过滤掉serverSocketChannel和发消息的channel
+            if (channel instanceof ServerSocketChannel || channel.hashCode() == from.hashCode()) {
+                continue;
+            }
+            SocketChannel targetChannel = (SocketChannel) channel;
             //将消息转发给其他客户端
             try {
                 //将数据写入到对应的通道中
@@ -115,7 +118,7 @@ public class WeChatServer {
         }
     }
 
-    public static void openServer() {
+    public static void main(String[] args) {
         new WeChatServer().listen();
     }
 
