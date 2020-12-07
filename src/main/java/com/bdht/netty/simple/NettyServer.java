@@ -9,6 +9,8 @@ import io.netty.channel.socket.SocketChannel;
 import io.netty.channel.socket.nio.NioServerSocketChannel;
 
 public class NettyServer {
+    private static final int PORT = 8888;
+
     public static void main(String[] args) {
         /**
          * 创建BossGroup
@@ -38,9 +40,9 @@ public class NettyServer {
 
 
         try {
+            System.out.println("服务端在端口：" + PORT + " 上启动");
             //绑定一个端口并同步处理   启动服务器并绑定端口
-            ChannelFuture channelFuture = bootstrap.bind(8888).sync();
-
+            ChannelFuture channelFuture = bootstrap.bind(PORT).sync();
             //监听通道关闭
             channelFuture.channel().closeFuture().sync();
         } catch (InterruptedException e) {

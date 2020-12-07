@@ -37,7 +37,7 @@ public class NettyServerHandler extends ChannelInboundHandlerAdapter {
      */
     @Override
     public void channelReadComplete(ChannelHandlerContext ctx) throws Exception {
-        ctx.writeAndFlush(Unpooled.copiedBuffer("hello ", CharsetUtil.UTF_8));
+        ctx.writeAndFlush(Unpooled.copiedBuffer("hello from server ", CharsetUtil.UTF_8));
 
     }
 
