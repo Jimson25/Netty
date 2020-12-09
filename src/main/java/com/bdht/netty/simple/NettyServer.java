@@ -21,6 +21,7 @@ public class NettyServer {
         /**
          * 创建workerGroup
          *  WorkerGroup主要用于处理业务
+         *  NioEventLoopGroup中的NioEventLoop的个数默认是CPU核数*2
          */
         NioEventLoopGroup workerGroup = new NioEventLoopGroup();
 

@@ -2,3 +2,4 @@
 /target/
 **/*.iml
 /.idea/
+/src/main/java/com/bdht/**/Test.java

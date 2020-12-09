@@ -21,6 +21,26 @@ public class NettyServerHandler extends ChannelInboundHandlerAdapter {
      */
     @Override
     public void channelRead(ChannelHandlerContext ctx, Object msg) throws Exception {
+        //用户程序自定义普通任务，这里添加了两个线程去执行任务，这两个线程会被添加到上下文的taskQueue中
+        ctx.channel().eventLoop().execute(() -> {
+            try {
+                Thread.sleep(10000);
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
+            ctx.writeAndFlush(Unpooled.copiedBuffer("hello from server -- 1 ", CharsetUtil.UTF_8));
+        });
+
+        ctx.channel().eventLoop().execute(() -> {
+            try {
+                Thread.sleep(15000);
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
+            ctx.writeAndFlush(Unpooled.copiedBuffer("hello from server -- 2 ", CharsetUtil.UTF_8));
+        });
+
+
         System.out.println("server ctx = " + ctx);
         //将msg转换成byteBuf 这里的ByteBuf是NIO提供的
         ByteBuf buf = (ByteBuf) msg;
@@ -31,7 +51,7 @@ public class NettyServerHandler extends ChannelInboundHandlerAdapter {
     }
 
     /**
-     * 向通道写入数据
+     * 读取事件结束后调用，向通道写入数据
      * @param ctx 上下文对象，包含pipeline、channel、连接地址等
      * @throws Exception
      */
