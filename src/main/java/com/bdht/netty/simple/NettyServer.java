@@ -44,6 +44,18 @@ public class NettyServer {
             System.out.println("服务端在端口：" + PORT + " 上启动");
             //绑定一个端口并同步处理   启动服务器并绑定端口
             ChannelFuture channelFuture = bootstrap.bind(PORT).sync();
+
+            //netty的futureListener
+            channelFuture.addListener((future)->{
+                if (channelFuture.isSuccess()){
+                    System.out.println("监听 "+PORT+" 端口成功");
+                }else {
+                    System.out.println("监听 "+PORT+" 端口失败");
+                }
+            });
+
+
+
             //监听通道关闭
             channelFuture.channel().closeFuture().sync();
         } catch (InterruptedException e) {

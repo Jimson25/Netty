@@ -6,6 +6,8 @@ import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.ChannelInboundHandlerAdapter;
 import io.netty.util.CharsetUtil;
 
+import java.util.concurrent.TimeUnit;
+
 /**
  * 自定义一个handler
  * 这里我们自定义的handler需要按照Netty规范继承一个handlerAdapter
@@ -38,8 +40,20 @@ public class NettyServerHandler extends ChannelInboundHandlerAdapter {
                 e.printStackTrace();
             }
             ctx.writeAndFlush(Unpooled.copiedBuffer("hello from server -- 2 ", CharsetUtil.UTF_8));
-        });
+        }); //end
 
+        //用户自定义的定时任务
+        ctx.channel().eventLoop().schedule(new Runnable() {
+            @Override
+            public void run() {
+                try {
+                    Thread.sleep(15000);
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
+                ctx.writeAndFlush(Unpooled.copiedBuffer("hello from server -- 3 ", CharsetUtil.UTF_8));
+            }
+        },5, TimeUnit.SECONDS);
 
         System.out.println("server ctx = " + ctx);
         //将msg转换成byteBuf 这里的ByteBuf是NIO提供的
