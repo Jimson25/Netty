@@ -28,10 +28,17 @@ public class NettyServer {
         //创建服务器启动对象，配置参数
         ServerBootstrap bootstrap = new ServerBootstrap();
 
-        bootstrap.group(bossGroup, workerGroup)      //设置两个线程组
-                .channel(NioServerSocketChannel.class)      //使用NIOSocketChannel作为服务器通道
-                .option(ChannelOption.SO_BACKLOG, 128)   //设置线程队列得到的连接个数
-                .childOption(ChannelOption.SO_KEEPALIVE, true)   //设置保持活动连接状态
+                //设置两个线程组
+        bootstrap.group(bossGroup, workerGroup)
+                //使用NIOSocketChannel作为服务器通道
+                .channel(NioServerSocketChannel.class)
+                //设置线程队列得到的连接个数
+                .option(ChannelOption.SO_BACKLOG, 128)
+                //设置保持活动连接状态
+                .childOption(ChannelOption.SO_KEEPALIVE, true)
+                //这个Handler会在BossGroup中生效
+                .handler(null)
+                //这里的handler会在WorkerGroup中生效
                 .childHandler(new ChannelInitializer<SocketChannel>() {
                     //给pipeline设置处理器
                     protected void initChannel(SocketChannel ch) throws Exception {
@@ -46,14 +53,13 @@ public class NettyServer {
             ChannelFuture channelFuture = bootstrap.bind(PORT).sync();
 
             //netty的futureListener
-            channelFuture.addListener((future)->{
-                if (channelFuture.isSuccess()){
-                    System.out.println("监听 "+PORT+" 端口成功");
-                }else {
-                    System.out.println("监听 "+PORT+" 端口失败");
+            channelFuture.addListener((future) -> {
+                if (channelFuture.isSuccess()) {
+                    System.out.println("监听 " + PORT + " 端口成功");
+                } else {
+                    System.out.println("监听 " + PORT + " 端口失败");
                 }
             });
-
 
 
             //监听通道关闭
