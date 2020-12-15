@@ -28,7 +28,7 @@ public class NettyServer {
         //创建服务器启动对象，配置参数
         ServerBootstrap bootstrap = new ServerBootstrap();
 
-                //设置两个线程组
+        //设置两个线程组
         bootstrap.group(bossGroup, workerGroup)
                 //使用NIOSocketChannel作为服务器通道
                 .channel(NioServerSocketChannel.class)
