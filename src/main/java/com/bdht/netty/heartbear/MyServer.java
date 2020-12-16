@@ -37,7 +37,7 @@ public class MyServer {
                          */
                         pipeline.addLast(new IdleStateHandler(3, 5, 7, TimeUnit.SECONDS));
                         //加入一个对空闲检测进一步处理的handler
-                        pipeline.addLast(null);
+                        pipeline.addLast(new MyServerHandler());
 
                     }
                 });
