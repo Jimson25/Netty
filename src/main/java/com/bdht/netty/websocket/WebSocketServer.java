@@ -5,8 +5,8 @@ import io.netty.channel.ChannelFuture;
 import io.netty.channel.ChannelInitializer;
 import io.netty.channel.ChannelPipeline;
 import io.netty.channel.nio.NioEventLoopGroup;
-import io.netty.channel.socket.ServerSocketChannel;
 import io.netty.channel.socket.SocketChannel;
+import io.netty.channel.socket.nio.NioServerSocketChannel;
 import io.netty.handler.codec.http.HttpObjectAggregator;
 import io.netty.handler.codec.http.HttpServerCodec;
 import io.netty.handler.codec.http.websocketx.WebSocketServerProtocolHandler;
@@ -22,7 +22,7 @@ public class WebSocketServer {
         ServerBootstrap bootstrap = new ServerBootstrap();
 
         bootstrap.group(bossGroup, workerGroup)
-                .channel(ServerSocketChannel.class)
+                .channel(NioServerSocketChannel.class)
                 .handler(new LoggingHandler(LogLevel.INFO))
                 .childHandler(new ChannelInitializer<SocketChannel>() {
                     @Override
@@ -36,9 +36,9 @@ public class WebSocketServer {
                         pipeline.addLast(new HttpObjectAggregator(8192));
                         //websocket数据是以帧的形式传递
                         //WebSocketServerProtocolHandler 核心功能是将http协议升级为ws协议保持长连接
-                        pipeline.addLast(new WebSocketServerProtocolHandler("/"));
+                        pipeline.addLast(new WebSocketServerProtocolHandler("/hello-world"));
                         //自定义的handler
-                        pipeline.addLast(null);
+                        pipeline.addLast(new MyWebSocketFrameHandler());
 
 
                     }
