@@ -37,7 +37,7 @@ public class NettyServer {
                 //设置保持活动连接状态
                 .childOption(ChannelOption.SO_KEEPALIVE, true)
                 //这个Handler会在BossGroup中生效
-                .handler(null)
+//                .handler(null)
                 //这里的handler会在WorkerGroup中生效
                 .childHandler(new ChannelInitializer<SocketChannel>() {
                     //给pipeline设置处理器
